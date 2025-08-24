@@ -2,16 +2,12 @@ import rich_click as click
 from rich_click.rich_command import RichCommand
 import requests
 import shutil
-import toml
 from rich.console import Console
 from rich.panel import Panel
 from rich.syntax import Syntax
 from rich.markdown import Markdown
 
 console = Console()
-
-def load_comits():
-    config = toml.load("config.toml")
 
 def ask_box(prompt="Your question", gap_lines=1):
     term_width = shutil.get_terminal_size().columns
