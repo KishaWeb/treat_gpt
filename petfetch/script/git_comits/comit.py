@@ -1,44 +1,43 @@
 import requests
 from datetime import datetime, timedelta
 
-#put your user name here
-USERNAME = "KishaWeb"
-DAYS_BACK = 1
+def get_comits():
+    USERNAME = "KishaWeb"
+    DAYS_BACK = 7
 
-headers = {
-    "Accept": "application/vnd.github.v3+json"
-}
+    headers = {
+        "Authorization": f"token ghp_xxx",  # replace with your token
+        "Accept": "application/vnd.github.v3+json"
+    }
 
-since_date = (datetime.now() - timedelta(days=DAYS_BACK)).isoformat()
+    url = f"https://api.github.com/users/{USERNAME}/events"
+    params = {"per_page": 100}
 
-url = f"https://api.github.com/users/{USERNAME}/events"
-params = {"per_page": 100}
+    try:
+        response = requests.get(url, headers=headers, params=params)
+        response.raise_for_status()
+        events = response.json()
 
-try:
-    response = requests.get(url, headers=headers, params=params)
-    response.raise_for_status()
-    events = response.json()
+        pushes = []   # list of push events
+        commits = []  # list of all commits
 
-    # Filter for push events (commits)
-    commits = []
-    for event in events:
-        if event["type"] == "PushEvent":
-            for commit in event["payload"]["commits"]:
-                commits.append({
-                    "repo": event["repo"]["name"],
-                    "message": commit.get("message", "No message"),
-                    "sha": commit.get("sha", "N/A"),
-                    "url": commit.get("url", "N/A"),
-                    "date": event.get("created_at", "N/A")
-                })
+        for event in events:
+            if event["type"] == "PushEvent":
+                pushes.append(event)  # count per push
 
-    commits.sort(key=lambda x: x["date"], reverse=True)
+                for commit in event["payload"]["commits"]:
+                    commits.append({
+                        "repo": event["repo"]["name"],
+                        "message": commit.get("message", "No message"),
+                        "sha": commit.get("sha", "N/A"),
+                        "url": commit.get("url", "N/A"),
+                        "date": event.get("created_at", "N/A")
+                    })
 
-    print(f"Latest commits by {USERNAME}:")
-    for i, commit in enumerate(commits[:10], 1):
-        print(f"{i}. {commit['repo']}: {commit['message']} ({commit['date']})")
-        print(f"   SHA: {commit['sha']}")
-        print(f"   URL: {commit['url']}\n")
+        commits.sort(key=lambda x: x["date"], reverse=True)
+        return pushes, commits  # return pushes and commits separately
 
-except requests.exceptions.RequestException as e:
-    print(f"Error fetching data: {e}")
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching data: {e}")
+        return [], []
+#i tried my best for the comments
