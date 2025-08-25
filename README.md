@@ -16,6 +16,7 @@ so with Treat gpt you could get rid of vibe coding, basically Treat Gpt gives yo
   cd petfetch
   chmod +x script/main.py
   sudo ln -s script/main.py /usr/local/bin/treat_gpt
+  treat_gpt
 ```
 and replace USERNAME = "your user name" in the git_commits with your github user name and replace "Authorization": f"token your token" with your token
 
