@@ -1,3 +1,4 @@
+#!/home/arshia/petfetch/.venv/bin/python
 import rich_click as click
 from rich_click.rich_command import RichCommand
 import requests
@@ -7,10 +8,11 @@ from pathlib import Path
 from rich.console import Console
 from rich.panel import Panel
 from rich.markdown import Markdown
-from git_comits.comit import get_comits
+from git_comits.commit import get_comits
 
 console = Console()
 DATA_FILE = Path("questions.toml")
+
 
 # -----------------------------
 # TOML load/save helpers
@@ -28,18 +30,29 @@ def save_questions(questions):
 # -----------------------------
 # Ask box function
 # -----------------------------
+ASCII_FILE = Path("/home/arshia/petfetch/src/ascii-art.txt")
+
 def ask_box(prompt="Your question", gap_lines=1):
-    term_width = shutil.get_terminal_size().columns
+    # Load ASCII art
+    if ASCII_FILE.exists():
+        with open(ASCII_FILE, "r") as f:
+            ascii_art = f.read()
+    else:
+        ascii_art = ""
 
-    console.print(f"[bold cyan]{prompt}[/bold cyan]")
+    # Display ASCII inside a panel with white border and fixed width
+    console.print(Panel(ascii_art, border_style="white", expand=False))
 
+    # Add gap lines
     for _ in range(gap_lines):
-        console.print("│")
+        console.print("")
 
-    console.print("│     ", end="")
-    question = input()
+    # Show prompt in a panel with white border and full width
+    console.print(Panel(f"[bold cyan]{prompt}[/bold cyan]", border_style="white", expand=True))
+
+    # Get user input
+    question = console.input("│     ")
     return question
-
 # -----------------------------
 # Main CLI command
 # -----------------------------
@@ -70,7 +83,7 @@ def ask():
     # Call OpenRouter API
     url = "https://openrouter.ai/api/v1/chat/completions"
     headers = {
-        "Authorization": "Bearer Your_api",  # put your API key
+        "Authorization": "Bearer Your_api",  # put your API key here
         "Content-Type": "application/json",
     }
 
@@ -121,3 +134,4 @@ if __name__ == "__main__":
     ask()
 
 #do you like the borders around the comments?
+#btw if your not using open router you could probaly easily fix it cause the creator cant afford a api key for every one
