@@ -13,7 +13,7 @@ so with Treat gpt you could get rid of vibe coding, basically Treat Gpt gives yo
 ```bash
   git clone https://github.com/KishaWeb/treat_gpt.git
   pip install rich rich-click requests toml
-  cd treatgpt
+  cd treat_gpt
   chmod +x script/main.py
   sudo ln -s script/main.py /usr/local/bin/treat_gpt
   treat_gpt
